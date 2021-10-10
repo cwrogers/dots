@@ -11,24 +11,28 @@ call plug#begin('~/.config/nvim/autoload/plugged')
 
   Plug 'scrooloose/NERDTree'
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-  Plug 'mangeshrex/uwu.vim'
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+  Plug 'mangeshrex/uwu.vim'
   Plug 'sonph/onehalf', { 'rtp': 'vim' }
+  Plug 'dylanaraps/wal.vim'
+
   Plug 'vim-airline/vim-airline'
   Plug 'vim-airline/vim-airline-themes'
+
   Plug 'jiangmiao/auto-pairs'
   Plug 'luochen1990/rainbow'
-
+  Plug 'lilydjwg/colorizer'
 call plug#end()
 
 
-set t_Co=256
-let &t_ut=''
-if exists('+termguicolors')
-  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-  set termguicolors
-endif
+"set t_Co=256
+"let &t_ut=''
+"if exists('+termguicolors')
+"  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+"  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+"  set termguicolors
+"endif
 
 " Important for colorschemes
 nmap <F5> :call <SID>SynStack()<CR>
@@ -39,7 +43,7 @@ function! <SID>SynStack()
   echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
 endfunc 
 
-colorscheme onehalfdark
+colorscheme wal
 let g:airline_theme='deus'
 
 hi CocUnderline gui=underline term=underline

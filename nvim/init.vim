@@ -1,5 +1,7 @@
 source $HOME/.config/nvim/plugins.vim
 source $HOME/.config/nvim/plug-configs/coc.vim
+source $HOME/.config/nvim/plug-configs/tree-sitter-highlight.lua
+"source $HOME/.config/nvim/theme/airline_theme.vim
 
 
 set splitbelow splitright
