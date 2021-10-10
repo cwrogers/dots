@@ -1,0 +1,27 @@
+{
+    "wallpaper": "/home/crogers/Pictures/walls/91392352_p0_master1200.jpg",
+    "alpha": "100",
+    "special": {
+        "background": "#f9f9fa",
+        "foreground": "#3e3e3e",
+        "cursor": "#3e3e3e"
+    },
+    "colors": {
+        "color0": "#f9f9fa",
+        "color1": "#2d8bb7",
+        "color2": "#3fa2cf",
+        "color3": "#54abd4",
+        "color4": "#55bad4",
+        "color5": "#e39192",
+        "color6": "#8cdae2",
+        "color7": "#3e3e3e",
+        "color8": "#bababb",
+        "color9": "#2d8bb7",
+        "color10": "#3fa2cf",
+        "color11": "#54abd4",
+        "color12": "#55bad4",
+        "color13": "#e39192",
+        "color14": "#8cdae2",
+        "color15": "#3e3e3e"
+    }
+}

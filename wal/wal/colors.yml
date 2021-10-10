@@ -1,0 +1,24 @@
+wallpaper: "/home/crogers/Pictures/walls/91392352_p0_master1200.jpg"
+
+special:
+    background: "#1f2c37"
+    foreground: "#c6c6c7"
+    cursor: "#c6c6c7"
+
+colors:
+    color0: "#1f2c37"
+    color1: "#2d8bb7"
+    color2: "#3fa2cf"
+    color3: "#54abd4"
+    color4: "#55bad4"
+    color5: "#e39192"
+    color6: "#8cdae2"
+    color7: "#c6c6c7"
+    color8: "#545557"
+    color9: "#2d8bb7"
+    color10: "#3fa2cf"
+    color11: "#54abd4"
+    color12: "#55bad4"
+    color13: "#e39192"
+    color14: "#8cdae2"
+    color15: "#c6c6c7"
