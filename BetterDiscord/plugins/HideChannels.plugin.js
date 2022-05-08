@@ -1,21 +1,24 @@
 /**
  * @name HideChannels
  * @author Farcrada
- * @version 2.0.6
+ * @version 2.1.3
  * @description Hide channel list from view.
- * 
+ *
+ * @invite qH6UWCwfTu
  * @website https://github.com/Farcrada/DiscordPlugins
  * @source https://github.com/Farcrada/DiscordPlugins/edit/master/Hide-Channels/HideChannels.plugin.js
  * @updateUrl https://raw.githubusercontent.com/Farcrada/DiscordPlugins/master/Hide-Channels/HideChannels.plugin.js
  */
 
+/** @type {typeof import("react")} */
+const React = BdApi.React;
 
 const config = {
 	info: {
 		name: "Hide Channels",
 		id: "HideChannels",
 		description: "Hide channel list from view.",
-		version: "2.0.6",
+		version: "2.1.3",
 		author: "Farcrada",
 		updateUrl: "https://raw.githubusercontent.com/Farcrada/DiscordPlugins/master/Hide-Channels/HideChannels.plugin.js"
 	},
@@ -31,40 +34,13 @@ const config = {
 
 
 class HideChannels {
+	//I like my spaces.
 	getName() { return config.info.name; }
 
+
 	load() {
-		if (!global.ZeresPluginLibrary) {
-			BdApi.showConfirmationModal("Library Missing", `The library plugin needed for ${this.getName()} is missing. Please click Download Now to install it.`, {
-				confirmText: "Download Now",
-				cancelText: "Cancel",
-				onConfirm: () => {
-					require("request").get("https://rauenzi.github.io/BDPluginLibrary/release/0PluginLibrary.plugin.js",
-						async (error, response, body) => {
-							if (error)
-								return require("electron").shell.openExternal("https://raw.githubusercontent.com/rauenzi/BDPluginLibrary/master/release/0PluginLibrary.plugin.js");
-							await new Promise(r => require("fs").writeFile(require("path").join(BdApi.Plugins.folder, "0PluginLibrary.plugin.js"), body, r));
-						});
-				}
-			});
-		}
-
-		//First try the updater
-		try {
-			global.ZeresPluginLibrary.PluginUpdater.checkForUpdate(config.info.name, config.info.version, config.info.updateUrl);
-		}
-		catch (err) {
-			console.error(this.getName(), "Plugin Updater could not be reached, attempting to enable plugin.", err);
-			try {
-				BdApi.Plugins.enable("ZeresPluginLibrary");
-				if (!BdApi.Plugins.isEnabled("ZeresPluginLibrary"))
-					throw new Error("Failed to enable ZeresPluginLibrary.");
-			}
-			catch (err) {
-				console.error(this.getName(), "Failed to enable ZeresPluginLibrary for Plugin Updater.", err);
-
-			}
-		}
+		try { global.ZeresPluginLibrary.PluginUpdater.checkForUpdate(config.info.name, config.info.version, config.info.updateUrl); }
+		catch (err) { console.error(this.getName(), "Failed to reach the ZeresPluginLibrary for Plugin Updater.", err); }
 	}
 
 	start() {
@@ -80,7 +56,7 @@ class HideChannels {
 
 			//React components for settings
 			this.FormItem = BdApi.findModuleByProps("FormItem").FormItem;
-			this.KeybindRecorder = BdApi.findModuleByDisplayName("KeybindRecorder");
+			this.WindowInfoStore = BdApi.findModuleByProps("isFocused", "isElementFullScreen");
 
 			//Check if there is any CSS we have already, and remove it.
 			BdApi.clearCSS(config.constants.cssStyle);
@@ -137,12 +113,16 @@ class HideChannels {
 	}
 
 	getSettingsPanel() {
+		//Settings window is lazy loaded so we need to cache this after it's been loaded (i.e. shown).
+		if (!this.KeybindRecorder)
+			this.KeybindRecorder = BdApi.findModuleByDisplayName("KeybindRecorder");
+
 		//Return our keybind settings wrapped in a form item
-		return BdApi.React.createElement(this.FormItem, {
+		return React.createElement(this.FormItem, {
 			title: "Toggle by keybind:"
 		},
 			//Containing a keybind recorder.
-			BdApi.React.createElement(this.KeybindRecorder, {
+			React.createElement(this.KeybindRecorder, {
 				defaultValue: this.keybindSetting,
 				onChange: (e) => {
 					//Set the keybind and save it.
@@ -163,7 +143,7 @@ class HideChannels {
 		//And if there are remnants of css left,
 		//make sure we remove the class from the sidebar to ensure visual confirmation.
 		let sidebar = document.querySelector(`.${this.sidebarClass}`);
-		if (sidebar.classList.contains(config.constants.hideElementsName))
+		if (sidebar?.classList.contains(config.constants.hideElementsName))
 			sidebar.classList.remove(config.constants.hideElementsName);
 	}
 
@@ -173,28 +153,15 @@ class HideChannels {
 
 		BdApi.Patcher.before(config.info.id, HeaderBar, "default", (thisObject, methodArguments, returnValue) => {
 			//When elements are being re-rendered we need to check if there actually is a place for us.
-			if (methodArguments[0]?.children)
-				//Along with that we need to check if what we're adding to is an array;
-				//because if not we'll render a button on the split view.
-				if (Array.isArray(methodArguments[0].children))
-					//And since we want to be on the most left of the header bar for style we unshift into the array.
-					methodArguments[0].children.unshift(BdApi.React.createElement(this.hideChannelComponent));
-		});
-	}
+			//Along with that we need to check if what we're adding to is an array;
+			//because if not we'll render a button on the split view.
 
-	/**
-	 * Use this to make a despensable easy to use listener with React.
-	 * @param {string} event The name of the event to listen for.
-	 * @param {callback} callback Function to call when said event is triggered.
-	 * @param {boolean} bubbling Handle bubbling or not
-	 * @param {object} [target] The object to attach our listener to.
-	 */
-	useListener(event, callback, bubbling, target = document) {
-		BdApi.React.useEffect(() => {
-			//ComponentDidMount
-			target.addEventListener(event, callback, bubbling);
-			//ComponentWillUnmount
-			return () => target.removeEventListener(event, callback, bubbling);
+			//Also: Prevent thread button appearing with this first line.
+			if (Array.isArray(methodArguments[0]?.children))
+				//Make sure our component isn't already present.
+				if (methodArguments[0].children.filter(child => child?.key === config.info.id).length < 1)
+					//And since we want to be on the most left of the header bar for style we unshift into the array.
+					methodArguments[0].children.unshift(React.createElement(this.hideChannelComponent, { key: config.info.id }));
 		});
 	}
 
@@ -206,63 +173,96 @@ class HideChannels {
 		//Only fetch the sidebar on a rerender.
 		const sidebarNode = document.querySelector(`.${this.sidebarClass}`),
 			//When a state updates, it rerenders.
-			[hidden, setHidden] = BdApi.React.useState(
+			[hidden, setHidden] = React.useState(
 				//Check on a rerender where our side bar is so we can correctly reflect this.
-				sidebarNode.classList.contains(config.constants.hideElementsName) ?
+				sidebarNode?.classList.contains(config.constants.hideElementsName) ?
 					true : false);
 
+		/**
+		 * Use this to make a despensable easy to use listener with React.
+		 * @param {string} eventName The name of the event to listen for.
+		 * @param {callback} callback Function to call when said event is triggered.
+		 * @param {boolean} bubbling Handle bubbling or not
+		 * @param {object} [target] The object to attach our listener to.
+		 */
+		function useListener(eventName, callback, bubbling, target = document) {
+			React.useEffect(() => {
+				//ComponentDidMount
+				target.addEventListener(eventName, callback, bubbling);
+				//ComponentWillUnmount
+				return () => target.removeEventListener(eventName, callback, bubbling);
+			});
+		}
+
+		function useWindowChangeListener(windowStore, callback) {
+			React.useEffect(() => {
+				windowStore.addChangeListener(callback);
+				return () => windowStore.removeChangeListener(callback);
+			});
+		}
+
+		/**
+		 * Adds and removes our CSS to make our sidebar appear and disappear.
+		 * @param {Node} sidebar Sidebar node we want to toggle.
+		 * @returns The passed state in reverse.
+		 */
+		function toggleSidebar(sidebar) {
+
+			/**
+			 * @param {boolean} state State that determines the toggle.
+			 */
+			return state => {
+				//If it is showing, we need to hide it.
+				if (!state)
+					//We hide it through CSS by adding a class.
+					sidebar?.classList.add(config.constants.hideElementsName);
+				//If it is hidden, we need to show it.
+				else
+					sidebar?.classList.remove(config.constants.hideElementsName);
+				return !state;
+			};
+		}
+
 		//Keydown event
-		this.useListener("keydown", e => {
+		useListener("keydown", e => {
 			//Since we made this an object,
 			//we can make new propertire with `[]`
 			this.currentlyPressed[e.keyCode] = true;
+
 			//Account for bubbling and attach to the global: `window`
 		}, true, window);
 
 		//Keyup event
-		this.useListener("keyup", e => {
+		useListener("keyup", e => {
 			//Check if every currentlyPessed is in our saved keybind.
 			if (this.keybind.every(key => this.currentlyPressed[key] === true))
 				//Toggle the sidebar and rerender on toggle; change the state
-				setHidden(this.toggleSidebar(sidebarNode));
+				setHidden(toggleSidebar(sidebarNode));
 
 			//Current key goes up, so...
 			this.currentlyPressed[e.keyCode] = false;
+
 			//Account for bubbling and attach to the global: `window`
 		}, true, window);
 
+		//Lose focus event
+		useWindowChangeListener(this.WindowInfoStore, () => {
+			//Clear when it gets back into focus
+			if (this.WindowInfoStore.isFocused())
+				this.currentlyPressed = [];
+		});
+
 		//Return our element.
-		return BdApi.React.createElement("div", {
+		return React.createElement("div", {
 			//Styling
 			id: config.constants.buttonID,
 			//To identify our object
-			key: config.info.id,
+			key: "hideChannelComponent",
 			//The icon
 			className: hidden ? config.constants.buttonHidden : config.constants.buttonVisible,
 			//Toggle the sidebar and rerender on toggle; change the state.
-			onClick: () => setHidden(this.toggleSidebar(sidebarNode))
+			onClick: () => setHidden(toggleSidebar(sidebarNode))
 		});
-	}
-
-	/**
-	 * Adds and removes our CSS to make our sidebar appear and disappear.
-	 * @param {Node} sidebar Sidebar node we want to toggle.
-	 * @returns The passed state in reverse.
-	 */
-	toggleSidebar(sidebar) {
-		/**
-		 * @param {boolean} state State that determines the toggle.
-		 */
-		return state => {
-			//If it is showing, we need to hide it.
-			if (!state)
-				//We hide it through CSS by adding a class.
-				sidebar.classList.add(config.constants.hideElementsName);
-			//If it is hidden, we need to show it.
-			else
-				sidebar.classList.remove(config.constants.hideElementsName);
-			return !state;
-		};
 	}
 
 	/**
@@ -274,13 +274,13 @@ class HideChannels {
 	checkKeybindLoad(keybindToLoad, defaultKeybind = [[0, 162], [0, 72]]) {
 		if (!keybindToLoad)
 			return defaultKeybind;
-		for (const keybind of keybindToLoad) {
-			if (Array.isArray(keybind)) {
-				for (const key of keybind)
-					if (typeof (key) !== "number")
+		for (const key of keybindToLoad) {
+			if (Array.isArray(key)) {
+				for (const keyCode of key)
+					if (typeof (keyCode) !== "number")
 						return defaultKeybind;
 			}
-			else if (typeof (keybind) !== "number")
+			else if (typeof (key) !== "number")
 				return defaultKeybind;
 
 		}

@@ -1,8 +1,11 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
 SETUVAR __fish_initialized:3100
+SETUVAR _fish_abbr_conf:cd\x20\x7e/\x2econfig/
+SETUVAR _fish_abbr_zathura:nohup\x20zathura
+SETUVAR _fisher_catppuccin_2F_fish_files:/home/crogers/\x2econfig/fish/conf\x2ed/catppuccin\x2efish
 SETUVAR _fisher_jorgebucaran_2F_fisher_files:/home/crogers/\x2econfig/fish/functions/fisher\x2efish\x1e/home/crogers/\x2econfig/fish/completions/fisher\x2efish
-SETUVAR _fisher_plugins:jorgebucaran/fisher
+SETUVAR _fisher_plugins:jorgebucaran/fisher\x1ecatppuccin/fish
 SETUVAR _tide_prompt_4757:\x1b\x28B\x1b\x5bm\x1b\x28B\x1b\x5bm\x1b\x28B\x1b\x5bm\x20\x1b\x28B\x1b\x5bm\x1b\x28B\x1b\x5bm\x1b\x5b38\x3b2\x3b215\x3b0\x3b0m\u2718\x20HUP\x1b\x5b38\x3b2\x3b148\x3b148\x3b148m\x20\x1b\x28B\x1b\x5bm\x1b\x28B\x1b\x5bm\x1b\x5b38\x3b2\x3b95\x3b135\x3b135m09\x3a16\x3a38\x20PM\x1b\x28B\x1b\x5bm\x1b\x28B\x1b\x5bm\x1b\x28B\x1b\x5bm\x1b\x28B\x1b\x5bm\x1e\x1b\x28B\x1b\x5bm\x1b\x28B\x1b\x5bm\x1b\x28B\x1b\x5bm\x1b\x28B\x1b\x5bm\x1b\x28B\x1b\x5bm\x1b\x28B\x1b\x5bm\x1b\x28B\x1b\x5bm\x1b\x28B\x1b\x5bm\x1b\x5b38\x3b2\x3b0\x3b135\x3b175m\x1b\x5b1m\x1b\x5b38\x3b2\x3b0\x3b175\x3b255m\x7e\x1b\x28B\x1b\x5bm\x1b\x28B\x1b\x5bm\x1b\x28B\x1b\x5bm\x1b\x5b38\x3b2\x3b0\x3b135\x3b175m\x1b\x5b38\x3b2\x3b148\x3b148\x3b148m\x20\x1b\x28B\x1b\x5bm\x1b\x28B\x1b\x5bm\x1b\x5b38\x3b2\x3b255\x3b0\x3b0m\u276f\x1b\x28B\x1b\x5bm\x20
 SETUVAR fish_color_autosuggestion:707A8C
 SETUVAR fish_color_cancel:normal
@@ -32,3 +35,4 @@ SETUVAR fish_pager_color_completion:normal
 SETUVAR fish_pager_color_description:B3A06D\x1eyellow
 SETUVAR fish_pager_color_prefix:normal\x1e\x2d\x2dbold\x1e\x2d\x2dunderline
 SETUVAR fish_pager_color_progress:brwhite\x1e\x2d\x2dbackground\x3dcyan
+SETUVAR fish_user_paths:/opt/android\x2dsdk/cmdline\x2dtools/latest/bin\x1e/opt/android\x2dsdk/tools\x1e/opt/android\x2dsdk/emulator\x1e/opt/android\x2dsdk/tools/bin\x1e/opt/android\x2dsdk/platform\x2dtools

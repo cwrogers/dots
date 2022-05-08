@@ -1,4 +1,16 @@
 {
     "HideChannels": true,
-    "ZeresPluginLibrary": true
+    "ZeresPluginLibrary": true,
+    "InvisibleTyping": true,
+    "FreeEmojis": false,
+    "FileViewer": true,
+    "DoubleClickToEdit": true,
+    "BetterCodeblocks": false,
+    "HideChatIcons": true,
+    "FreeStickers": true,
+    "WhoReacted": true,
+    "Freemoji": true,
+    "ChannelDms": true,
+    "SpotifyControls": true,
+    "BDFDB": false
 }
